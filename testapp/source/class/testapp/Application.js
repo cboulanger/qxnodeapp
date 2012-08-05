@@ -59,37 +59,49 @@ qx.Class.define("testapp.Application",
       var socket = io.connect(url + "/testapp");
 
       // Create a button
-      var button1 = new qx.ui.form.Button("Authenticate", "testapp/test.png");
+      var loginButton = new qx.ui.form.Button("Login", "testapp/test.png");
       var doc = this.getRoot();
-      doc.add(button1, {left: 100, top: 50});
+      doc.add(loginButton, {left: 100, top: 50});
 
       // Add an event listener for the button
-      button1.addListener("execute", function(e) {
-        new dialog.Login({
-          image : "dialog/logo.gif",
-          text  : "Please log in",
-          checkCredentials  : checkCredentials,
-          callback : handleCheckCredentials
-        }).show();
+      var loginWindow, loginStatus = false;
+      loginButton.addListener("execute", function(e)
+      {
+        // if someone is logged in, log out
+        if (loginStatus){
+          loginButton.setLabel("Login");
+          loginStatus = false;
+          return;
+        }
+
+        // create or reuse login window
+        if ( ! loginWindow ){
+          loginWindow = new dialog.Login({
+            image : "dialog/logo.gif",
+            text  : "Please log in",
+            checkCredentials  : checkCredentials,
+            callback : finalCallback
+          });
+        }
+        loginWindow.show();
       },this);
 
+      // this asyncronously checks the user credentials
       function checkCredentials( username, password, callback ) {
-        socket.emit("authenticate", { username:username, password:password },
-          function( err, data )
-          {
-            callback( err );
-          }
-        );
+        socket.emit("authenticate", { username:username, password:password }, callback );
       }
 
-      function handleCheckCredentials(err){
+      // this reacts on the result of the authentication
+      function finalCallback(err, data){
+        // error
         if (err) {
-
+          return dialog.Dialog.error( err );
         }
+        // Success!
+        loginStatus = true;
+        loginButton.setLabel( "Logout " + data );
+        dialog.Dialog.alert("Welcome, " + data + "!" )
       }
-
-
-
     }
   }
 });

@@ -1,10 +1,8 @@
-// This plugin provides minimal access to user data
-
+// This plugin provides user authentication
 module.exports = function setup(options, imports, register)
 {
-
     // create new store for users
-    var userstore = imports.store.createStore("memory");
+    var userstore = imports.store.createStore();
 
     // create some sample user data, this will be removed later
     // we could of course keep the data in a simple array
@@ -20,10 +18,8 @@ module.exports = function setup(options, imports, register)
         userstore.set( item.id, item, callback);
       },
       // final callback
-      function(err){
-        if(err) {throw err}
+      function(){
         userstore.length(function(err,length){
-          if(err) {throw err}
           console.log("Store now has %s entries.", length);
         });
       }
@@ -31,26 +27,31 @@ module.exports = function setup(options, imports, register)
 
     // API
     var api = {
-      getUserData : function(id, callback){
-        userstore.get(id, callback);
-      },
-      setUserData : function(id, data, callback){
-        userstore.set(id, data, callback)
-      },
       // very simple authentication
       authenticate : function(userid, password, callback){
         userstore.get(userid, function( err, data ){
-          if ( data.password == password ) callback( null, data );
-          callback( "Invalid Password" );
+          // user does not exist
+          // you wouldn't usually reveal this
+          if( ! data )
+          {
+            return callback("Unknown user");
+          }
+          // check password
+          if ( data.password == password )
+          {
+            return callback( null, data.name );
+          }
+          // authentication failed
+          return callback( "Invalid Password" );
         });
       }
     };
 
     // Listen for authenticate event and return result of authentication to browser
-    var socket = imports.socket;
-    socket.on("authenticate",function(data, callback){
-      api.authenticate(data.username, data.password, function(err, data){
-        callback( err, data );
+    var io = imports.socket;
+    io.on("connection", function(socket){
+      socket.on("authenticate",function(data, callback){
+        api.authenticate(data.username, data.password, callback);
       });
     });
 
