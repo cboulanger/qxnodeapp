@@ -1,0 +1,9 @@
+{
+    "name": "store",
+    "version": "0.0.1",
+    "main": "keys.js",
+    "private": true,
+    "plugin": {
+        "provides": ["store"]
+    }
+}

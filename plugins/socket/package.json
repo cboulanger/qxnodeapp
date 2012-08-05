@@ -1,0 +1,11 @@
+{
+    "name": "socket",
+    "version": "0.0.1",
+    "main": "socketio.js",
+    "private": true,
+
+    "plugin": {
+        "consumes": ["http"],
+        "provides": ["socket"]
+    }
+}

@@ -1,0 +1,68 @@
+{
+  "name"    : "testapp",
+
+  "include" :
+  [
+    {
+      "path" : "${QOOXDOO_PATH}/tool/data/config/application.json"
+    }
+  ],
+
+  "export" :
+  [
+    "api",
+    "api-data",
+    "build",
+    "clean",
+    "distclean",
+    "fix",
+    "info",
+    "inspector",
+    "lint",
+    "migration",
+    "pretty",
+    "profiling",
+    "source",
+    "source-all",
+    "source-hybrid",
+    "simulation-build",
+    "simulation-run",
+    "test",
+    "test-source",
+    "translation"
+  ],
+
+  "default-job" : "source-hybrid",
+
+  "let" :
+  {
+    "APPLICATION"  : "testapp",
+    "QOOXDOO_PATH" : "../qooxdoo",
+    "QXTHEME"      : "testapp.theme.Theme",
+    "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
+    "LOCALES"      : [ "en" ],
+    "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
+    "ROOT"         : "."
+  },
+
+
+
+  "jobs": {
+
+    "libraries": {
+      "library": [{
+        "manifest": "../qooxdoo-contrib/Dialog/Manifest.json"
+      }]
+    },
+    "source-script": {
+      "add-script": [{
+        "uri": "/socket.io/socket.io.js"
+      }]
+    },
+    "build-script": {
+      "add-script": [{
+        "uri": "/socket.io/socket.io.min.js"
+      }]
+    }
+  }
+}
