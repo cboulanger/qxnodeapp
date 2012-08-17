@@ -12,3 +12,4 @@ architect.createApp(config, function (err, app) {
     }
     console.log("Started '%s'!", configName);
 });
+
