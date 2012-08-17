@@ -1,0 +1,10 @@
+{
+    "name": "acl",
+    "version": "0.0.1",
+    "main": "acl.js",
+    "private": true,
+    "plugin": {
+        "consumes": ["socket"],
+        "provides": ["acl"]
+    }
+}
