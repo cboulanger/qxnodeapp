@@ -29,7 +29,8 @@
     "simulation-run",
     "test",
     "test-source",
-    "translation"
+    "translation",
+    "deploy"
   ],
 
   "default-job" : "source-hybrid",
@@ -63,6 +64,17 @@
       "add-script": [{
         "uri": "/socket.io/socket.io.min.js"
       }]
+    },
+    "deploy": {
+      "shell": { "command" : [
+        "git checkout -b deploy",
+        "git add -f ./build",
+        "git add -f ./source/script",
+        "git commit -m \"Adding build files\"",
+        "git push -f heroku-target deploy:master",
+        "git checkout master",
+        "git branch -D deploy"
+        ] }
     }
   }
 }

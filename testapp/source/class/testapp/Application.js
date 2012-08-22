@@ -142,6 +142,7 @@ qx.Class.define("testapp.Application",
               var value = t.hook(permissions[t.permission]||false);
               t.widget.set(t.property, value );
             });
+            return self;
           },
           // pull the permissions from the server
           pull : function(){
@@ -149,6 +150,7 @@ qx.Class.define("testapp.Application",
               if(err) return alert(err);
               self.enforce(data[resourceName]);
             });
+            return self;
           },
           // start listening to events concerning permissions and pull data
           start : function() {
@@ -159,10 +161,14 @@ qx.Class.define("testapp.Application",
             self.enforce();
             // get permissions from server
             self.pull();
+            return self;
           }
         };
         return self;
       }
+
+      // create new resource controller over a fictional "db" resource
+      var dbController = resourceController("db");
 
       // create buttons
       var readButton = new qx.ui.form.Button("Read");
@@ -172,13 +178,19 @@ qx.Class.define("testapp.Application",
       var deleteButton = new qx.ui.form.Button("Delete");
       doc.add(deleteButton, {left: 200, top: 100});
 
+      // delete button is only enabled when the checkbox is checked
+      // a change in state needs to trigger an update
+      var confirmDeleteCB = new qx.ui.form.CheckBox("Enable Delete");
+      confirmDeleteCB.addListener("changeValue",dbController.enforce)
+      doc.add(confirmDeleteCB,{left:270, top:100});
+
       // configure ACL
-      resourceController("db")
+      dbController
         .add(readButton,  "enabled", "read")
         .add(writeButton, "enabled", "write")
-        .add(deleteButton, "enabled", "delete")
+        .add(deleteButton, "enabled", "delete", function(v){return v && confirmDeleteCB.getValue()})
+        .add(confirmDeleteCB, "enabled", "delete")
         .start();
-
 
     } // end main
   }
