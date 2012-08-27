@@ -1,7 +1,7 @@
 var path = require('path');
 var architect = require("architect");
 
-var configName = process.argv[2] || "source";
+var configName = process.argv[2] || "deploy";
 var configPath = path.resolve("./configs/", configName);
 var config     = architect.loadConfig(configPath);
 
