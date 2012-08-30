@@ -130,17 +130,23 @@ qx.Class.define("testapp.Application",
               widget: widget,
               permission: permission,
               property: property,
-              hook: hook || function(v){return v;}
+              hook: hook || function(p){return p;}
             });
             return self; // make it chainable
           },
+          // set the permissions
+          setPermissions : function(perms){
+            permissions = perms;
+          },
           // enforce the given or stored permissions with the controlled
           // widgets
-          enforce : function(perms){
-            if ( perms ) permissions = perms;
+          enforce : function(){
             targets.forEach(function(t){
-              var value = t.hook(permissions[t.permission]||false);
-              t.widget.set(t.property, value );
+              // compute new property value by calling hook function with
+              // permission value and original property value
+              var propVal = t.widget.get(t.property);
+              var computedPropVal = t.hook(permissions[t.permission]||false, propVal);
+              t.widget.set(t.property, computedPropVal );
             });
             return self;
           },
@@ -148,7 +154,8 @@ qx.Class.define("testapp.Application",
           pull : function(){
             socket.emit("allowedPermissions",resourceName,function(err,data){
               if(err) return alert(err);
-              self.enforce(data[resourceName]);
+              self.setPermissions(data[resourceName]);
+              self.enforce();
             });
             return self;
           },
@@ -188,8 +195,9 @@ qx.Class.define("testapp.Application",
       dbController
         .add(readButton,  "enabled", "read")
         .add(writeButton, "enabled", "write")
-        .add(deleteButton, "enabled", "delete", function(v){return v && confirmDeleteCB.getValue()})
+        .add(deleteButton, "enabled", "delete", function(p,v){return p && confirmDeleteCB.getValue()})
         .add(confirmDeleteCB, "enabled", "delete")
+        .add(confirmDeleteCB, "value", "delete", function(p,v){return p? v:false})
         .start();
 
     } // end main

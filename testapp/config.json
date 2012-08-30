@@ -46,10 +46,7 @@
     "ROOT"         : "."
   },
 
-
-
   "jobs": {
-
     "libraries": {
       "library": [{
         "manifest": "../qooxdoo-contrib/Dialog/Manifest.json"
@@ -65,13 +62,13 @@
         "uri": "/socket.io/socket.io.min.js"
       }]
     },
-    "deploy": {
+    "deploy" : { "run": ["build","push_to_openshift"] },
+    "push_to_openshift": {
       "shell": { "command" : [
         "git checkout -b deploy",
-        "git add -f ./build",
-        "git add -f ./source/script",
-        "git commit -m \"Adding build files\"",
-        "git push -f heroku-target deploy:master",
+        "git add -f build",
+        "git commit -m \"Ready for deployment\"",
+        "git push -f openshift deploy:master",
         "git checkout master",
         "git branch -D deploy"
         ] }

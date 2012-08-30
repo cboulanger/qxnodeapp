@@ -1,6 +1,0 @@
-[submodule "qooxdoo"]
-	path = qooxdoo
-	url = https://github.com/qooxdoo/qooxdoo.git
-[submodule "qooxdoo-contrib/Dialog"]
-	path = qooxdoo-contrib/Dialog
-	url = https://github.com/cboulanger/qx-contrib-Dialog
