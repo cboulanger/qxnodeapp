@@ -1,7 +1,7 @@
 var path = require("path");
 
 module.exports = [
-  { packagePath: "../plugins/http", root : path.resolve("testapp"),
+  { packagePath: "../plugins/http", root : path.resolve("testapp/build"),
     host : process.env.OPENSHIFT_INTERNAL_IP,
     port : process.env.OPENSHIFT_INTERNAL_PORT
   },
