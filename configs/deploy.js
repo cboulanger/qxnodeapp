@@ -2,8 +2,8 @@ var path = require("path");
 
 module.exports = [
   { packagePath: "../plugins/http", root : path.resolve("testapp/build"),
-    host : process.env.OPENSHIFT_INTERNAL_IP,
-    port : process.env.OPENSHIFT_INTERNAL_PORT
+    host : "qxnodeapp-panyasan.rhcloud.com",
+    port : 80
   },
   { packagePath: "../plugins/socket", namespace : "/testapp", loglevel : 0 },
   { packagePath: "../plugins/store" },
