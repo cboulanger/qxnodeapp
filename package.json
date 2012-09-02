@@ -1,6 +1,6 @@
 {
   "name": "qxnodeapp",
-  "version": "0.0.1-1",
+  "version": "0.0.1-11",
   "description": "A demo app combining qooxdoo & nodejs",
   "engines": {
     "node": ">= 0.6.0",

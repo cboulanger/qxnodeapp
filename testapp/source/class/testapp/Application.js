@@ -61,7 +61,7 @@ qx.Class.define("testapp.Application",
 
       // set up socket.io
       var loc = document.location;
-      var url = loc.protocol + "//" + loc.host;
+      var url = loc.protocol + "//" + loc.host + ":" + loc.port;
       var socket = io.connect(url + "/testapp");
 
       // Create a button

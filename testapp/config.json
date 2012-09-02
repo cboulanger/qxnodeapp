@@ -29,8 +29,7 @@
     "simulation-run",
     "test",
     "test-source",
-    "translation",
-    "deploy"
+    "translation"
   ],
 
   "default-job" : "source-hybrid",
@@ -59,19 +58,8 @@
     },
     "build-script": {
       "add-script": [{
-        "uri": "/socket.io/socket.io.min.js"
+        "uri": "/socket.io/socket.io.js"
       }]
-    },
-    "deploy" : { "run": ["build","push_to_openshift"] },
-    "push_to_openshift": {
-      "shell": { "command" : [
-        "git checkout -b deploy",
-        "git add -f build",
-        "git commit -m \"Ready for deployment\"",
-        "git push -f openshift deploy:master",
-        "git checkout master",
-        "git branch -D deploy"
-        ] }
     }
   }
 }
