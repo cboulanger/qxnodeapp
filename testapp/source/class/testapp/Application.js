@@ -121,18 +121,18 @@ qx.Class.define("testapp.Application",
 
       // a resource controller that reacts on permission updates
       // we don't do any type checking to keep this short
-      function resourceController( resourceName ){
+      function createController( resourceName ){
         var targets =[], permissions={};
-        var self = {
+        var controller = {
           // bind a property of a widget to a permission
-          add : function( widget, property, permission, hook ){
+          add : function( widget, property, permission, converter ){
             targets.push( {
               widget: widget,
               permission: permission,
               property: property,
-              hook: hook || function(p){return p;}
+              converter: converter || function(p){return p;}
             });
-            return self; // make it chainable
+            return controller; // make it chainable
           },
           // set the permissions
           setPermissions : function(perms){
@@ -145,37 +145,37 @@ qx.Class.define("testapp.Application",
               // compute new property value by calling hook function with
               // permission value and original property value
               var propVal = t.widget.get(t.property);
-              var computedPropVal = t.hook(permissions[t.permission]||false, propVal);
+              var computedPropVal = t.converter(permissions[t.permission]||false, propVal);
               t.widget.set(t.property, computedPropVal );
             });
-            return self;
+            return controller;
           },
           // pull the permissions from the server
           pull : function(){
             socket.emit("allowedPermissions",resourceName,function(err,data){
               if(err) return alert(err);
-              self.setPermissions(data[resourceName]);
-              self.enforce();
+              controller.setPermissions(data);
+              controller.enforce();
             });
-            return self;
+            return controller;
           },
           // start listening to events concerning permissions and pull data
           start : function() {
-            bus.on("updatePermissions", self.pull );
-            socket.on("updatePermissions", self.pull );
-            socket.on("acl-update-"+resourceName, self.enforce );
+            bus.on("updatePermissions", controller.pull );
+            socket.on("updatePermissions", controller.pull );
+            socket.on("acl-update-"+resourceName, controller.enforce );
             // this will normally disable everything since no permissions are set
-            self.enforce();
+            controller.enforce();
             // get permissions from server
-            self.pull();
-            return self;
+            controller.pull();
+            return controller;
           }
         };
-        return self;
+        return controller;
       }
 
       // create new resource controller over a fictional "db" resource
-      var dbController = resourceController("db");
+      var dbController = createController("db");
 
       // create buttons
       var readButton = new qx.ui.form.Button("Read");
